@@ -1,0 +1,37 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      PROJECT_NAME: ${PROJECT_NAME}
+      FRONTEND_HOST: ${FRONTEND_HOST?Variable not set}
+      ENVIRONMENT: ${ENVIRONMENT}
+      BACKEND_CORS_ORIGINS: ${BACKEND_CORS_ORIGINS}
+      SECRET_KEY: ${SECRET_KEY?Variable not set}
+      JWT_SECRET: ${JWT_SECRET?Variable not set}
+      JWT_EXPIRATION: ${JWT_EXPIRATION}
+      MYSQL_HOST: db
+      MYSQL_PORT: ${MYSQL_PORT}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER?Variable not set}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD?Variable not set}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+
+  db:
+    image: mysql:9.3
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: yes
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
